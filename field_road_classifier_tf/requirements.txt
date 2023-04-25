@@ -1,0 +1,7 @@
+tensorflow
+numpy
+matplotlib
+tensorflow-addons
+argparse
+opencv-python
+random
