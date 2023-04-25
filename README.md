@@ -5,6 +5,6 @@ This folder is divided into two parts :
  I didn't have time to train or improve it).
  
  - The second project (field_road_classifier_tf) is a binary classification model coded in Tensorflow. 
- It has been trained and this is the one that will be used for inference because this project contains the weights
+ It has been trained and this is the one that will be used for inference (contains the weights).
 
 
