@@ -4,6 +4,11 @@ from tensorflow.keras.preprocessing import image
 
 
 class FieldRoadPredictor:
+    """
+        This "FieldRoadPredictor" class allows loading a pre-trained 
+        image classification model and predicting whether 
+        a given image represents a field or a road using this model.
+    """
     def __init__(self, model_path):
         self.model = tf.keras.models.load_model(model_path)
         self.class_names = ["field", "road"]
