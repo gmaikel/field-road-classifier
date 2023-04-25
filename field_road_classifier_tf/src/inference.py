@@ -3,26 +3,38 @@ import os
 import tensorflow as tf
 import matplotlib.pyplot as plt
 
+
 class FieldRoadInference:
+    """
+    The "FieldRoadInference" class loads a trained model and evaluates
+    its performance on a set of test images of field roads using binary classification.
+    It generates a confusion matrix and calculates accuracy to evaluate
+    the model's performance. It also saves the confusion matrix as an image file.
+    """
+
     def __init__(self, data_path, model_path, output_path):
         self.data_path = data_path
-        self.output_path = os.path.join(output_path, os.path.basename(model_path).split('.')[0])
+        self.output_path = os.path.join(
+            output_path, os.path.basename(model_path).split(".")[0]
+        )
         self.model = tf.keras.models.load_model(model_path)
         self.num_classes = len(os.listdir(data_path))
-        self.class_names = ['field', 'road']  # Add class names here
+        self.class_names = ["field", "road"]  # Add class names here
 
         if not os.path.exists(self.output_path):
             os.makedirs(self.output_path)
 
     def evaluate(self):
-        test_datagen = tf.keras.preprocessing.image.ImageDataGenerator(rescale=1.0 / 255)
+        test_datagen = tf.keras.preprocessing.image.ImageDataGenerator(
+            rescale=1.0 / 255
+        )
 
         test_data = test_datagen.flow_from_directory(
             self.data_path,
             target_size=(224, 224),
             batch_size=32,
-            class_mode='binary',
-            shuffle=False
+            class_mode="binary",
+            shuffle=False,
         )
 
         # Predict the labels of the test images using the loaded model
@@ -48,7 +60,7 @@ class FieldRoadInference:
 
         # Save the confusion matrix to file
         cm_fig = self.plot_confusion_matrix(cm)
-        cm_fig.savefig(os.path.join(self.output_path, 'confusion_matrix.png'))
+        cm_fig.savefig(os.path.join(self.output_path, "confusion_matrix.png"))
 
         # Save some false prediction images
         # self.save_false_prediction_images(test_data, y_true, y_pred)
@@ -57,25 +69,27 @@ class FieldRoadInference:
 
     def plot_confusion_matrix(self, cm):
         plt.figure(figsize=(8, 6))
-        plt.imshow(cm, interpolation='nearest', cmap=plt.cm.Blues)
-        plt.title('Confusion matrix')
+        plt.imshow(cm, interpolation="nearest", cmap=plt.cm.Blues)
+        plt.title("Confusion matrix")
         plt.colorbar()
         tick_marks = np.arange(self.num_classes)
         plt.xticks(tick_marks, self.class_names, rotation=45)
         plt.yticks(tick_marks, self.class_names)
-        plt.xlabel('Predicted label')
-        plt.ylabel('True label')
+        plt.xlabel("Predicted label")
+        plt.ylabel("True label")
 
-        thresh = cm.numpy().max() / 2.  # convert to NumPy array and then get the max value
+        thresh = (
+            cm.numpy().max() / 2.0
+        )  # convert to NumPy array and then get the max value
 
         for i in range(self.num_classes):
             for j in range(self.num_classes):
                 plt.text(
                     j,
                     i,
-                    format(cm[i, j], 'd'),
-                    horizontalalignment='center',
-                    color='white' if cm[i, j] > thresh else 'black'
+                    format(cm[i, j], "d"),
+                    horizontalalignment="center",
+                    color="white" if cm[i, j] > thresh else "black",
                 )
 
         plt.tight_layout()
@@ -98,6 +112,3 @@ class FieldRoadInference:
     #             filename = f"{true_label}_as_{pred_label}_img_{i}.png"
     #             filepath = os.path.join(self.output_path, 'false_predictions', filename)
     #             plt.imsave(filepath, img[0])
-
-
-
